@@ -1,0 +1,28 @@
+{
+	"name": "@jacoblockett/interval",
+	"version": "0.1.0",
+	"description": "A glorified setInterval :)",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"interval",
+		"setInterval",
+		"eventemitter",
+		"events",
+		"timer",
+		"task",
+		"tasks",
+		"action",
+		"actions",
+		"nodejs",
+		"javascript"
+	],
+	"author": "Jacob Lockett",
+	"license": "ISC",
+	"dependencies": {
+		"nanoid": "^5.0.3"
+	}
+}
