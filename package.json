@@ -1,9 +1,13 @@
 {
 	"name": "@jacoblockett/interval",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A glorified setInterval :)",
 	"main": "index.js",
 	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jacoblockett/interval"
+	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
