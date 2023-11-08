@@ -52,11 +52,13 @@ interval.start()
 ### Signature:
 ```ts
 new Interval(interval?: Number | undefined): Interval
+
 // interval default = 1000
+// interval value is in milliseconds, just like a normal setInterval/setTimeout
 ```
 
 ### Description:
-Creates a new interval object.
+Creates a new Interval object.
 
 ---
 
@@ -100,7 +102,7 @@ Starts the Interval.
 
 ### Signature:
 ```ts
-Interval.addAction(action: Function, actionID?: String | undefined): String
+Interval.addAction(action: () => any, actionID?: String | undefined): String
 
 // actionID default = nanoid(8)
 // returns the actionID to be used with Interval.prototype.removeAction
@@ -174,7 +176,7 @@ Interval.on("actionRemoved", callback?: () => void | undefined): void
 ```
 
 ### Description:
-Emits after an action was removed to the action stack.
+Emits after an action was removed from the action stack.
 
 ---
 
@@ -184,16 +186,12 @@ Emits after an action was removed to the action stack.
 ```ts
 Interval.on("updating", callback?: (state?: {
     intervalsCompleted: Number,
-    timeSince: {
-        start: BigInt,
-        lastIntervalStart: BigInt,
-        lastIntervalFinish: BigInt,
-    }
+    startTime: BigInt,
 } | undefined) => void | undefined): void
 ```
 
 ### Description:
-Emits when the interval begins running all of the actions on the action stack.
+Emits when the Interval begins running all of the actions on the action stack.
 
 ---
 
@@ -203,11 +201,7 @@ Emits when the interval begins running all of the actions on the action stack.
 ```ts
 Interval.on("updated", callback?: (state?: {
     intervalsCompleted: Number,
-    timeSince: {
-        start: BigInt,
-        lastIntervalStart: BigInt,
-        lastIntervalFinish: BigInt,
-    }
+    startTime: BigInt,
 } | undefined) => void | undefined): void
 ```
 
@@ -222,16 +216,12 @@ Emits after all of the actions on the action stack have been completed.
 ```ts
 Interval.on("stopping", callback?: (state?: {
     intervalsCompleted: Number,
-    timeSince: {
-        start: BigInt,
-        lastIntervalStart: BigInt,
-        lastIntervalFinish: BigInt,
-    }
+    startTime: BigInt,
 } | undefined) => void | undefined): void
 ```
 
 ### Description:
-Emits when the interval begins to stop and performs cleanup.
+Emits when the Interval begins to stop and performs cleanup.
 
 ---
 
@@ -248,7 +238,7 @@ Interval.on("stopped", callback?: (state?: {
 ```
 
 ### Description:
-Emits when the interval finalizes cleanup and stops running.
+Emits when the Interval finalizes cleanup and stops running.
 
 ## Maintainers
 
@@ -257,4 +247,4 @@ Emits when the interval finalizes cleanup and stops running.
 ## License
 © 2023 Jacob Lockett
 
-[ISC License](https://opensource.org/license/isc-license-txt/) - the "do 'almost' whatever the f*** you want with it" one.
+[ISC License](https://opensource.org/license/isc-license-txt/) - the "do _almost_ whatever the f*** you want with it" one.
