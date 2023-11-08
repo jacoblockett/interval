@@ -7,8 +7,6 @@ class Interval extends EventEmitter {
 	#interval
 	#intervalsCompleted = 0
 	#startTime
-	#lastIntervalStartTime
-	#lastIntervalFinishTime
 
 	/**
 	 * Creates an Interval - a glorified setInterval :)
@@ -33,24 +31,6 @@ class Interval extends EventEmitter {
 	 */
 	#actionExists(actionID) {
 		return !!this.#actions.filter(s => s.actionID === actionID).length
-	}
-
-	/**
-	 * Compares the comparator bigint against the internal timers
-	 *
-	 * @param {BigInt} comparator The bigint to compare against the internal timers
-	 * @returns {{start: BigInt, lastIntervalStart: BigInt, lastIntervalFinish: BigInt}}
-	 */
-	#calculateTime(comparator) {
-		return {
-			start: comparator - this.#startTime,
-			lastIntervalStart: !this.#lastIntervalStartTime
-				? BigInt(0)
-				: comparator - this.#lastIntervalStartTime,
-			lastIntervalFinish: !this.#lastIntervalFinishTime
-				? BigInt(0)
-				: comparator - this.#lastIntervalFinishTime,
-		}
 	}
 
 	/**
@@ -81,53 +61,38 @@ class Interval extends EventEmitter {
 	 * Updates the interval, running any actions from the action stack in the process.
 	 */
 	#update() {
-		const updateStartTime = process.hrtime.bigint()
-
 		this.emit("updating", {
 			intervalsCompleted: this.#intervalsCompleted,
-			timeSince: this.#calculateTime(updateStartTime),
+			startTime: this.#startTime,
 		})
 
 		for (let i = 0; i < this.#actions.length; i++) {
 			this.#actions[i].action()
 		}
 
-		const updateFinishTime = process.hrtime.bigint()
-
 		this.#intervalsCompleted += 1
 		this.emit("updated", {
 			intervalsCompleted: this.#intervalsCompleted,
-			timeSince: this.#calculateTime(updateFinishTime),
+			startTime: this.#startTime,
 		})
-		this.#lastIntervalStartTime = updateStartTime
-		this.#lastIntervalFinishTime = updateFinishTime
 	}
 
 	/**
 	 * Ends the interval and performs cleanup.
 	 *
-	 * @returns {{intervalsCompleted: Number, start: BigInt, lastIntervalStart: BigInt, lastIntervalFinish: BigInt}}
+	 * @returns {{intervalsCompleted: Number, startTime: BigInt}}
 	 */
 	#clear() {
 		clearInterval(this.#id)
 
 		const intervalsCompleted = this.#intervalsCompleted
 		const startTime = this.#startTime
-		const lastIntervalStartTime = this.#lastIntervalStartTime
-		const lastIntervalFinishTime = this.#lastIntervalFinishTime
 
 		this.#id = undefined
 		this.#intervalsCompleted = 0
 		this.#startTime = undefined
-		this.#lastIntervalStartTime = undefined
-		this.#lastIntervalFinishTime = undefined
 
-		return {
-			intervalsCompleted,
-			startTime,
-			lastIntervalStartTime,
-			lastIntervalFinishTime,
-		}
+		return { intervalsCompleted, startTime }
 	}
 
 	/**
@@ -190,10 +155,9 @@ class Interval extends EventEmitter {
 	 */
 	stop() {
 		if (this.#id) {
-			const stopInitTime = process.hrtime.bigint()
 			this.emit("stopping", {
 				intervalsCompleted: this.#intervalsCompleted,
-				timeSince: this.#calculateTime(stopInitTime),
+				startTime: this.#startTime,
 			})
 
 			const { intervalsCompleted, startTime } = this.#clear()
